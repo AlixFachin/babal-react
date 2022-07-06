@@ -1,0 +1,25 @@
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainMenu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 15px;
+    width: clamp()
+}
+
+.mainMenu > a {
+    margin-left: 12px;
+    margin-right: 12px;
+    font-size: large;
+    background-color: lightblue;
+    border-radius: 5px;
+    padding: 5px 10px 5px 10px;
+}
