@@ -16,9 +16,10 @@ You control the ball with the arrows and jump with the space bar. Try not to fal
 # Tech used 💻
 
 - [Three js](https://threejs.org/docs/index.html#api/en/math/Vector3)
-- [Husky](https://typicode.github.io/husky/#/) to use Git Hooks
 - [eslint](https://eslint.org/) to detect typos (useful when you code on your side projects after a long day of work!)
 - [Jest](https://jestjs.io/docs/getting-started) for testing
+- [Xstate](https://xstate.js.org/) for state machines / state management
+- [Cypress](https://www.cypress.io/) for end-to-end testing
 
 # References
 

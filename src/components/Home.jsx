@@ -7,6 +7,7 @@ import { useActor } from '@xstate/react';
 import MainMenu from './mainMenu';
 import Credits from './Credits';
 import SettingsScreen from './Settings';
+import GameScreen from './GameScreen';
 
 export default function Home() {
 
@@ -25,6 +26,8 @@ export default function Home() {
         innerElement = <Credits returnHome={returnHome} />;
     } else if (state.value === 'settingsScreen') {
         innerElement = <SettingsScreen returnHome={returnHome} />;
+    } else if (state.value === 'gamePreStart') {
+        innerElement = <GameScreen returnHome={returnHome} />;
     }
 
     return <main>

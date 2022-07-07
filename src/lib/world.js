@@ -15,8 +15,8 @@ import { test_map_features } from "./map";
 import * as THREE from 'three';
 
 // Importing assets
-import playerTextureURL from '../assets/marble-texture.jpg';
-import backgroundPicURL from '../assets/cloud_image.jpg';
+import playerTextureURL from '../../assets/marble-texture.jpg';
+import backgroundPicURL from '../../assets/cloud_image.jpg';
 import { vector2String, vectorAbsFloor } from "./utils";
 
 // Behaviour Constants
@@ -195,14 +195,14 @@ const test_player_death = () => {
 };
 
 
-const init_scene = () => {
+const init_scene = (canvasElement) => {
     scene_objects.scene = new THREE.Scene(); // Scene = Container where we will put objects
   
     scene_objects.textures.bgTexture = new THREE.TextureLoader().load(backgroundPicURL);
     scene_objects.scene.background = scene_objects.textures.bgTexture;
 
     scene_objects.renderer = new THREE.WebGLRenderer({
-        canvas: document.querySelector('#bg'),
+        canvas: canvasElement,
     });
 
     scene_objects.renderer.setPixelRatio(window.devicePixelRatio);
@@ -241,8 +241,8 @@ const add_objects = () => {
 
 };
 
-const init_world = () => {
-    init_scene();
+const init_world = (canvasElement) => {
+    init_scene(canvasElement);
     add_objects();
     reset_player_data();
 

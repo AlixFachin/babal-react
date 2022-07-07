@@ -1,15 +1,15 @@
 /* 
- * main.js
+ * game.js
  *
  * File which contains the game backbone, i.e. key handlers, menus, state machine, main loop, sidebar management etc...
  * 
 */ 
 
-import '../style.css';
+import '../style/GameScreen.css';
 
 import {  world_keydown_handler, world_keyup_handler, get_player_button_handler, getPlayerData, reset_player_data, init_world, start_mainLoop, stop_mainLoop } from './world';
 
-import gameOverSound from '../assets/LiveLost.wav';
+import gameOverSound from '../../assets/LiveLost.wav';
 
 // Keypressed Event and player position update
 
@@ -78,16 +78,16 @@ const initEventHandlers = () => {
     document.addEventListener('keyup', keyup_handler);
 
     // trackpad (left)
-    document.getElementById('trackCursor').addEventListener('mousedown', onMouseDownTrackPad );
-    document.getElementById('trackCursor').addEventListener('mouseup', onMouseUpTrackPad);
-    document.getElementById('trackCursor').addEventListener('touchstart', onMouseDownTrackPad );
-    document.getElementById('trackCursor').addEventListener('touchend', onMouseUpTrackPad);
+    // document.getElementById('trackCursor').addEventListener('mousedown', onMouseDownTrackPad );
+    // document.getElementById('trackCursor').addEventListener('mouseup', onMouseUpTrackPad);
+    // document.getElementById('trackCursor').addEventListener('touchstart', onMouseDownTrackPad );
+    // document.getElementById('trackCursor').addEventListener('touchend', onMouseUpTrackPad);
 
     document.onmousemove = onMouseMoveDocument;
     document.ontouchmove = onMouseMoveDocument;
 
     // Reset Button
-    document.getElementById('reset_button').addEventListener('click', reset_game_click);
+    // document.getElementById('reset_button').addEventListener('click', reset_game_click);
 
 };
 
@@ -115,9 +115,10 @@ const display_player_stats = () => {
     panel.innerText = [ position_string, speed_string, push_string, rot_string, contact_string].join('\n');
 };
 
-
-// Init functions 
-init_world();
-initEventHandlers();
-
-start_mainLoop(display_player_stats);
+export default function gameStart(canvasElement) {
+    // Init functions 
+    init_world(canvasElement);
+    initEventHandlers();
+    
+    start_mainLoop(display_player_stats);
+}
