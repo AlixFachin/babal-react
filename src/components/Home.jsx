@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import "../style/Home.css";
 
 import { GlobalGameContext } from '../lib/GameStateProvider';
@@ -16,8 +16,13 @@ export default function Home() {
     }
 
     const gameStateServices = useContext(GlobalGameContext);
-    const [state] = useActor(gameStateServices.gameService);
+    const [ state ] = useActor(gameStateServices.gameService);
     const { send } = gameStateServices.gameService;
+    const [ appConfig, setAppConfig ] = useState({
+        isMusicOn: false,
+        isMobileControl: true,
+        isDebugMode: true,
+    });
 
     let innerElement;
     if (state.value === 'Home') {
@@ -25,9 +30,9 @@ export default function Home() {
     } else if (state.value === 'creditsScreen') {
         innerElement = <Credits returnHome={returnHome} />;
     } else if (state.value === 'settingsScreen') {
-        innerElement = <SettingsScreen returnHome={returnHome} />;
-    } else if (state.value === 'gamePreStart') {
-        innerElement = <GameScreen returnHome={returnHome} />;
+        innerElement = <SettingsScreen returnHome={returnHome} appConfig={appConfig} setAppConfig={setAppConfig} />;
+    } else if (state.value === 'gamePreStart' || state.value === 'gameLive') {
+        innerElement = <GameScreen returnHome={returnHome} appConfig={appConfig} setAppConfig={setAppConfig} />;
     }
 
     return <main>

@@ -9,6 +9,14 @@ export default function Credits({ returnHome }) {
         <div className="mainMenu">
             <a onClick={returnHome}>Back Home</a>
         </div>
+        <p>
+            Many thanks to:
+            <ul>
+                <li><span>UFoot</span>, original creator of the <a href="https://ufoot.org/babal/hp48">Babal</a> game on HP48</li>
+                <li>INSERT NAME HERE for the game music</li>
+                <li>for the game background picture</li>
+            </ul>
+        </p>
     </div>;
 }
 

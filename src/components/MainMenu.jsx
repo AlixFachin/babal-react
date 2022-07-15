@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-
 export default function MainMenu({ send }) {
     function startGame(send) {
         return () => {
@@ -21,8 +20,8 @@ export default function MainMenu({ send }) {
         };
     }
     
-    return <div>
-        <h1>Welcome to BABAL-React!</h1>
+    return <div className="homePanel">
+        <h1>BABAL-React</h1>
         <p>This small game is a clone of a game I used to play in high school on my HP48GX...</p>
         <div className="mainMenu">
             <a onClick={startGame(send)}>Start Game</a>

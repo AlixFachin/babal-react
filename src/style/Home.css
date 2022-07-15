@@ -5,8 +5,13 @@ main {
     align-items: center;
 }
 
+h1 {
+    font-size: 10vh;
+}
+
 .mainMenu {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-top: 1em;
@@ -16,8 +21,7 @@ main {
 }
 
 .mainMenu > a {
-    margin-left: 12px;
-    margin-right: 12px;
+    margin: 12px;
     font-size: large;
     background-color: lightblue;
     border-radius: 5px;

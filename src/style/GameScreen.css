@@ -125,4 +125,6 @@ header {
     justify-content: space-between;
   }
   
-  
+  .countDown {
+    font-size: 30vh;
+  }

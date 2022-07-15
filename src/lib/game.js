@@ -115,10 +115,17 @@ const display_player_stats = () => {
     panel.innerText = [ position_string, speed_string, push_string, rot_string, contact_string].join('\n');
 };
 
-export default function gameStart(canvasElement) {
-    // Init functions 
+function prepareGame(canvasElement) {
     init_world(canvasElement);
     initEventHandlers();
+}
+
+export default function gameStart() {
     
     start_mainLoop(display_player_stats);
+}
+
+export {
+    gameStart,
+    prepareGame,
 }
