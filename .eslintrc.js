@@ -12,7 +12,7 @@ module.exports = {
         "sourceType": "module",
     },
     "rules": {
-        "no-unused-vars" : "error",
+        "no-unused-vars" : "warn",
         "no-undef" : "error",
         "semi" : ["error", "always"],
         "comma-dangle" : ["error", "always-multiline"],
