@@ -27,8 +27,30 @@ const vectorAbsFloor = (v, scale = 0.001) => {
     v.z = absFloor(v.z, scale);
 };
 
+/*
+ * throttle 
+ */
+
+const throttle = (func, limit) => {
+    
+    let isThrottled = false;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!isThrottled) {
+            func.apply(context, args);
+            isThrottled = true;
+            setTimeout(() => {
+                isThrottled = false;
+            }, limit);
+        }
+    };
+};
+
 export {
+
     vector2String,
     vectorAbsFloor,
     absFloor,
+    throttle,
 };

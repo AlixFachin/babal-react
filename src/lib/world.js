@@ -54,6 +54,23 @@ const scene_objects = {
     player: {},
 }; 
 
+/*
+ * texture_list object will contain a list of all the texture files which have to be loaded asynchronously.
+ * 
+ * The first rendering will then be called once all the textures have been loaded (with Promise.all)
+ */
+const texture_list = { 
+    promiseList: [],
+    
+    addTextureLoader: function(newLoadingPromise) {
+        this.promiseList.push(newLoadingPromise);
+    },
+
+    loadAllTextures: function() {
+        return Promise.all(this.promiseList);
+    }
+};
+
 const getPlayerData = () => player_data;
 
 const reset_player_data = () => {
@@ -197,9 +214,13 @@ const test_player_death = () => {
 
 const init_scene = (canvasElement) => {
     scene_objects.scene = new THREE.Scene(); // Scene = Container where we will put objects
-  
-    scene_objects.textures.bgTexture = new THREE.TextureLoader().load(backgroundPicURL);
-    scene_objects.scene.background = scene_objects.textures.bgTexture;
+    const loader = new THREE.TextureLoader();
+
+    texture_list.addTextureLoader(loader.loadAsync(backgroundPicURL).then(texture => {
+        console.log('Loaded the background texture')
+        scene_objects.textures.bgTexture = texture;
+        scene_objects.scene.background = scene_objects.textures.bgTexture;
+    }));
 
     scene_objects.renderer = new THREE.WebGLRenderer({
         canvas: canvasElement,
@@ -222,10 +243,17 @@ const add_objects = () => {
 
     // Adding the main player object
     scene_objects.player.geometry = new THREE.SphereGeometry(player_data.radius);
-    const imageTexture = new THREE.TextureLoader().load(playerTextureURL);
-    scene_objects.player.material = new THREE.MeshBasicMaterial( { map: imageTexture});
+    scene_objects.player.material = new THREE.MeshBasicMaterial( );
     scene_objects.player.mesh = new THREE.Mesh(scene_objects.player.geometry, scene_objects.player.material);
-    scene_objects.scene.add(scene_objects.player.mesh);
+    scene_objects.scene.add(scene_objects.player.mesh);        
+    
+    const imageLoader = new THREE.TextureLoader();
+    texture_list.addTextureLoader(imageLoader.loadAsync(playerTextureURL).then(texture => {
+        console.log('Finished loading the player texture!')
+        scene_objects.player.mesh.material.map = texture;
+        scene_objects.player.mesh.material.needsUpdate = true;
+        scene_objects.player.mesh.needsUpdate = true;
+    }));
 
     // Adding ambientlight
     scene_objects.lights.push(new THREE.AmbientLight(0xffffff));
@@ -264,6 +292,22 @@ const update_window_size = () => {
     scene_objects.cameras.playerCamera.updateProjectionMatrix();
 };
 
+const initial_render = () => {
+    update_window_size();
+    update_player_position();
+    updateCameraPosition();
+
+    try {
+        texture_list.loadAllTextures().then( () => {
+            scene_objects.renderer.render(scene_objects.scene, scene_objects.cameras.playerCamera);
+        });
+    }
+    catch(err) {
+        console.error(err);
+    }
+
+};
+
 const start_mainLoop = updateDisplayRoutine => {
     scene_objects.renderer.setAnimationLoop( () => {
     
@@ -299,4 +343,5 @@ export {
     init_world,
     start_mainLoop,
     stop_mainLoop,
+    initial_render,
 };

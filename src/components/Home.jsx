@@ -37,10 +37,6 @@ export default function Home() {
 
     return <main>
         { innerElement }
-        <div>
-            Test state: { state.value }
-        </div>
-
     </main>;
 
 }

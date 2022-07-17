@@ -7,7 +7,15 @@
 
 import '../style/GameScreen.css';
 
-import {  world_keydown_handler, world_keyup_handler, get_player_button_handler, getPlayerData, reset_player_data, init_world, start_mainLoop, stop_mainLoop } from './world';
+import {  world_keydown_handler,
+    world_keyup_handler,
+    get_player_button_handler,
+    getPlayerData,
+    reset_player_data,
+    init_world,
+    start_mainLoop,
+    stop_mainLoop,
+    initial_render } from './world';
 
 import gameOverSound from '../../assets/LiveLost.wav';
 
@@ -118,14 +126,22 @@ const display_player_stats = () => {
 function prepareGame(canvasElement) {
     init_world(canvasElement);
     initEventHandlers();
+    initial_render();
 }
 
-export default function gameStart() {
+function startGame() {
     
     start_mainLoop(display_player_stats);
 }
 
-export {
-    gameStart,
-    prepareGame,
+function stopGame() {
+
+    stop_mainLoop();
+
 }
+
+export {
+    startGame,
+    prepareGame,
+    stopGame,
+};

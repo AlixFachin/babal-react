@@ -8,8 +8,7 @@ export default function CountDown({ initialCount, onCountDownEnd }) {
 
     useEffect(()=> {
         const timeOutId = setTimeout(() => {
-            
-            if (count == 0) {
+            if (count == 1) {
                 onCountDownEnd();
             } else {
                 setCount(count - 1);
@@ -18,12 +17,14 @@ export default function CountDown({ initialCount, onCountDownEnd }) {
         return () => clearTimeout(timeOutId);
     }, [count]);
 
-    return <div className="countDown">
-        { count }
+    return <div className="countDownLightBox">
+        <div className="countDown" key={count}>
+            { count }
+        </div>
     </div>;
 }
 
 CountDown.propTypes = {
     initialCount: PropTypes.number,
     onCountDownEnd: PropTypes.func,
-}
+};
