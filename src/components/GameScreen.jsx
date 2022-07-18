@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { GlobalGameContext } from '../lib/GameStateProvider';
 import { useActor } from '@xstate/react';
 
-import { startGame, stopGame, prepareGame } from "../lib/game";
+import { startGame, stopGame, prepareGame, resetGame } from "../lib/game";
 
 import ActionPanel from "./ActionPanel.jsx";
 import DirectionPanel from "./DirectionPanel.jsx";
@@ -26,7 +26,7 @@ export default function GameScreen({ returnHome, appConfig }) {
     const quitAndReturnHome = () => {
         stopGame();
         returnHome();
-    }
+    };
 
     useEffect(() => {
         if (state.value === 'gamePreStart') {
@@ -40,7 +40,7 @@ export default function GameScreen({ returnHome, appConfig }) {
         <p className="title">BABAL</p>
         <audio src="assets/Komiku_-_07_-_Run_against_the_universe.mp3" controls loop></audio>
         <div id="control_panel">
-            <button id="reset_button">Reset</button>
+            <button id="reset_button" onClick={ resetGame }>Reset</button>
             <a onClick={quitAndReturnHome}>Back to Home</a>
         </div>
     </header>;

@@ -5,85 +5,88 @@
  * 
 */ 
 
-import '../style/GameScreen.css';
-
-import {  world_keydown_handler,
-    world_keyup_handler,
-    get_player_button_handler,
+import {  
+    set_player_accelX,
+    set_player_accelZ,    
     getPlayerData,
     reset_player_data,
     init_world,
     start_mainLoop,
     stop_mainLoop,
-    initial_render } from './world';
+    initial_render,
+} from './world';
 
 import gameOverSound from '../../assets/LiveLost.wav';
 
 // Keypressed Event and player position update
 
-const keydown_handler = keyEvent => {
-    keyEvent.preventDefault();  
-    world_keydown_handler(keyEvent);
-};
-
-const keyup_handler = keyEvent => {
-    keyEvent.preventDefault();
-    world_keyup_handler(keyEvent);
-};
-
-const reset_game_click = () => {
+const resetGame = () => {
     stop_mainLoop();
     reset_player_data();
     start_mainLoop(display_player_stats);
 };
 
+/* 
+ * keyboardHandler: manages keydown and keyup related to player moves
+ * 
+ * @param isKeyDown boolean flag indicates whether the event is keyDown or keyUp
+ * @param keyEvent object(event) the actual event object
+ */
 
-let initX, initY;
-// Mobile "joystick" panel management
-const onMouseDownTrackPad = (event) => {
-    
 
-    document.getElementById('trackCursor').onmousemove = onMouseMoveTrackPad;
-    document.getElementById('trackCursor').ontouchmove = onMouseMoveTrackPad;
+const keyboardHandler = (isKeyDown, keyEvent) => {
 
-    if (!initX || !initY) {
-        initX = event.clientX;
-        initY = event.clientY;
+    // Helper object where the key is the keyEvent code
+    // (avoids doing a massive if... else if ... else if...)
+    const handlerLookup = {
+        ArrowUp: function() {
+            if (isKeyDown) {
+                // key down on arrow up => full speed ahead
+                console.log('Accel up keydown');
+                set_player_accelZ(1);
+            } else {
+                // key up
+                console.log('Accel up keyup');
+                set_player_accelZ(0);
+            }
+        },
+        ArrowDown: function() {
+            if (isKeyDown) {
+                // key down on arrow down => we go backward
+                console.log('Accel down keydn');
+                set_player_accelZ(-1);
+            } else {
+                console.log('Accel down keyup');
+                set_player_accelZ(0);
+            }
+        },
+        ArrowLeft: function() {
+            if (isKeyDown) {
+                set_player_accelX(-1);
+            } else {
+                set_player_accelX(0);
+            }
+        },
+        ArrowRight: function() {
+            if (isKeyDown) {
+                set_player_accelX(1);
+            } else {
+                set_player_accelX(0);
+            }
+        },
+    };
+
+    if (handlerLookup[keyEvent.code] instanceof Function) {
+        keyEvent.preventDefault();
+        return handlerLookup[keyEvent.code]();
     }
-    event.preventDefault();
-    event.stopPropagation();
-};
-
-const onMouseMoveTrackPad = event => {
-    event = event || window.event;
-    event.comesFromTrackpad = true;
-    
-    document.getElementById('track').innerText = `(${event.clientX - initX}, ${event.clientY - initY})`;
-    document.getElementById('trackCursor').style.transform = `translate(${Math.round((event.clientX - initX)/2)}px,${Math.round((event.clientY - initY)/2)}px)`;
 
 };
-
-const onMouseMoveDocument = event => {
-    if (!event.comesFromTrackpad) {
-        event.preventDefault();
-    }
-};
-
-const onMouseUpTrackPad = () => {
-
-    document.getElementById('trackCursor').onmousemove = null;
-    document.getElementById('trackCursor').ontouchmove = null;
-
-    initX = null;
-    initY = null;
-    document.getElementById('trackCursor').style.transform = "";
-
-}
 
 const initEventHandlers = () => {
     // Keyboard events (desktop version)
-    document.addEventListener('keydown', keydown_handler);
-    document.addEventListener('keyup', keyup_handler);
+    document.addEventListener('keydown', event => keyboardHandler(true, event));
+    document.addEventListener('keyup', event => keyboardHandler(false, event));
 
     // trackpad (left)
     // document.getElementById('trackCursor').addEventListener('mousedown', onMouseDownTrackPad );
@@ -91,8 +94,8 @@ const initEventHandlers = () => {
     // document.getElementById('trackCursor').addEventListener('touchstart', onMouseDownTrackPad );
     // document.getElementById('trackCursor').addEventListener('touchend', onMouseUpTrackPad);
 
-    document.onmousemove = onMouseMoveDocument;
-    document.ontouchmove = onMouseMoveDocument;
+    // document.onmousemove = onMouseMoveDocument;
+    // document.ontouchmove = onMouseMoveDocument;
 
     // Reset Button
     // document.getElementById('reset_button').addEventListener('click', reset_game_click);
@@ -144,4 +147,5 @@ export {
     startGame,
     prepareGame,
     stopGame,
+    resetGame,
 };

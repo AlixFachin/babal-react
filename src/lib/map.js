@@ -90,6 +90,7 @@ const allow_jump = (player_position, player_radius) => {
     return false;
 };
 
+// eslint-disable-next-line no-undef
 export const test_map_features = process.env.NODE_ENV !== 'test' ? {} : {
     tile_size_X, tile_size_Z,
 };

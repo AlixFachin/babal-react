@@ -68,7 +68,7 @@ const texture_list = {
 
     loadAllTextures: function() {
         return Promise.all(this.promiseList);
-    }
+    },
 };
 
 const getPlayerData = () => player_data;
@@ -126,18 +126,38 @@ const player_move_handler = {
     },
 };
 
-const get_player_button_handler = btnCode => {
-    switch(btnCode) {
-    case 'up':
-        return () => { player_move_handler.kd_speedUp(); player_move_handler.ku_accelKey(); };
-    case 'down':
-        return () => { player_move_handler.kd_slowDown(); player_move_handler.ku_accelKey(); };
-    case 'left':
-        return () => { player_move_handler.kd_moveLeft(); player_move_handler.ku_moveXKey(); };
-    case 'right':
-        return () => { player_move_handler.kd_moveRight(); player_move_handler.ku_moveXKey(); };
+/*
+ *  set_player_accelx applies a new value to the player move sideways
+ *  @param accelX number : percentage (between -1 and +1) of strength applied to X axis
+ *  -1 is to the left, +1 is to the right
+ */
+const set_player_accelX = accelX => {
+    if (isNaN(Number(accelX))) {
+        console.error('Non-numeric value received for X acceleration...');
+        return;
     }
-}
+    
+    const cappedAccelX = accelX === 0 ? 0 : Math.abs(accelX)/accelX * Math.max(Math.abs(accelX),1); 
+
+    // The "right" on the screen is actually negative X values => we need to multiply by -1
+    player_data.push.setX(-1 * cappedAccelX * pushStep_x);
+};
+
+/*
+ *  set_player_accelZ applies a new value to the player move sideways
+ *  @param accelZ number : percentage (between -1 and +1) of strength applied to Z axis
+ *  -1 is to accelerate backward, +1 is to accelerate forward
+ */
+const set_player_accelZ = accelZ => {
+    if (isNaN(Number(accelZ))) {
+        console.error('Non-numeric value received for X acceleration...');
+        return;
+    }
+    
+    const cappedAccelZ = accelZ === 0 ? 0 : Math.abs(accelZ)/accelZ * Math.max(Math.abs(accelZ),1); 
+
+    player_data.push.setZ(cappedAccelZ * pushStep_z);
+};
 
 const world_keydown_handler = keyEvent => {
     // lookup object to prevent a massive "if ... elseif ... elseif..."
@@ -217,7 +237,7 @@ const init_scene = (canvasElement) => {
     const loader = new THREE.TextureLoader();
 
     texture_list.addTextureLoader(loader.loadAsync(backgroundPicURL).then(texture => {
-        console.log('Loaded the background texture')
+        console.log('Loaded the background texture');
         scene_objects.textures.bgTexture = texture;
         scene_objects.scene.background = scene_objects.textures.bgTexture;
     }));
@@ -249,7 +269,7 @@ const add_objects = () => {
     
     const imageLoader = new THREE.TextureLoader();
     texture_list.addTextureLoader(imageLoader.loadAsync(playerTextureURL).then(texture => {
-        console.log('Finished loading the player texture!')
+        console.log('Finished loading the player texture!');
         scene_objects.player.mesh.material.map = texture;
         scene_objects.player.mesh.material.needsUpdate = true;
         scene_objects.player.mesh.needsUpdate = true;
@@ -336,9 +356,8 @@ const stop_mainLoop = () => {
 export {
     getPlayerData,
     reset_player_data,
-    world_keydown_handler,
-    world_keyup_handler,
-    get_player_button_handler,
+    set_player_accelX,
+    set_player_accelZ,
     update_player_position,
     init_world,
     start_mainLoop,
