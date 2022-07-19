@@ -1,7 +1,7 @@
 import { createMachine } from "xstate";
 
 export const gameMachine = 
-/** @xstate-layout N4IgpgJg5mDOIC5RQIYFswFkUGMAWAlgHZgB0AEgPYYDEselA7gMIBOkBALvEiAA6VYXApSKJQAD0QBaAOwAmUgBYAzAFYAjCqWyNANnk6NagDQgAnjKUbZpDUqXyAHE902lATlkBfb2dQY2PjEZFS0sJworJwA4uhg4vyCwqKJUgjSWmqkAAweSk5qBh4qKrI5OmaWGfJlpHpe2mrWerIeak6+-vFBhCQU1GB0DIwAymCcnMRQPKACQlOpvOnSnqTqDWoKGjY28rJVMs56ymr5Kjk58vIeDSpdIAFYuH1kTwAK7KOR0TR87BEopwACoEDCsRLzFJiZaIJQnBRnNQ5VxqQyyZF6Q4ZZrrFTXWQqc7yM7OB5PXohUg4dgQLiwUY0sBgIg0ABGuAA1mEErwoYsYZIjqpSM4NPIDK0rvoCtjpGiPHYLko1ETZLInHpmuSei8qU8ADIEABuQwANoJOEaAGa8ubJAVpRCtUganJ6PSOFQaJzqVTYjyKT0VUo6NRFQn3PyPXXBfqGk1DDk4bmDSEOkSCkArC62cNnFFElw7DTY2oaUiadrwq4ecVEpQ6wJ6-pmgi2g2WgAiBFgfDNKHMNBwoimRAArmA4hh0wtM06MsYcus6+VfSGti5sTpSO1xY4fSTHDko91m3GyG2O93e-3BzQngB5U0QvkZpZChAe0hOCoonTyHk1zqGWO5XLo6oSkU3qOE2zwXqQ05gM+YCsD2fYDkOyapjOb5zh+2aIIB2T6KUGg5LISiXESHRyiqihaFRHrkdccGUv0sATGOMyMuwLLslyPKztCC7ioqHg5Gctw7DcHiFAcFgyESy4SpReg7IGKp6FG0ZEJQEBwIkFItqEaZ4SJsI1PCP46B6pSItpWxykSCKtDWJ40TYbEmaQHxfD8nDCY6lnSDcroSvsmltMUpiKYuYU3Bidbumi4p6N5CFMnS3C8cyWb8vOln1rkbSqKpEqlPicrIkouTBp6yKXPs9gZa8vnxEappBYVn6ZE4dikUURQ1qoaJltk3rhq0Xi+qiaitVSV5gJ2EToXe1T2vhWYrOKuTGJVJ6+hi9HYj6tWAe0tQXA0WhaAt-RIShaG3ph3UESshiui46oegYyr6FicWhru6qqNoTieGUGj3WQnGTNMDJMiyb3bYg7S7lobRnBqTgeHWsXVKFWi5J4hROBoEk1ul0bGReKMLtIZGVuGEm+nJ5M7HKehXEqFTNJo+LqfNvjeEAA */
+/** @xstate-layout N4IgpgJg5mDOIC5RQIYFswFkUGMAWAlgHZgB0AEgPYYDEselA7gMIBOkBALvEiAA6VYXApSKJQAD0QBaAOwAmUgBYAzAFYAjCqWyNANnk6NagDQgAnjKUbZpDUqXyAHE902lATlkBfb2dQY2PjEZFS0sJworJwA4uhg4vyCwqKJUgjSWmqkAAweSk5qBh4qKrI5OmaWGfJlpHpe2mrWerIeak6+-vFBhCQU1GB0DIwAymCcnMRQPKACQlOpvOnSnqTqDWoKGjY28rJVMs56ymr5Kjk58vIeDSpdIAFYuH1kTwAK7KOR0TR87BEopwACoEDCsRLzFJiZaIJQnBRnNQ5VxqQyyZF6Q4ZZrrFTXWQqc7yM7OB5PXohUg4dgQLiwUY0sBgIg0ABGuAA1mEErwoYsYZIjqpSM4NPIDK0rvoCtjpGiPHYLko1ETZLInHpmuSei8qU8ADIEABuQwANoJOEaAGa8ubJAVpRCtUganJ6PSOFQaJzqVTYjyKT0VUo6NRFQn3PyPXXBfqGk1DDk4bmDSEOkSCkArRyKVx6d0ksr4+EqbHe0hOYzh1QNDReZw+aMUvX9M0EW0Gy0AEQIsD4ZpQ5hoOFEUyIAFcwHEMOmFpmnTUchpTh6nCVLl52uWOqRVTs8sYXCUlDrAq2yO3Oz2+wOhzQngB5U0QvkZpZCjL4px2HLNd02OUWQ7j++5aJ4pSuJ4Z7PHGZCwBM44zIy7AsuyXI8nO0KLuKioeH+Hi3DsNweIUBwWDIRI5KKrTwjsgYqnoUbRkQlAQHAiQtnBAyzm+84ftmwonE4OgeqUiJMVscpEgitEFjkpTtDYMGUvG8SfGA3xAlhjqwjUioKAYbTorcNymBRGS4aKXhnBo7pouKegqRe1K0vSKHMlm-ILnp4oqLkbSqBKhmlPicrIkouTBp6yKXPs9jOdxCamjpPmfjs-nrlWBbwvs7rkdUhjWWKrQ7J4RROc2savKQV5gF2ES9v2g7VPa-FZis4q5MYoUKb6GIqvI2I+pF8h5GipTuh4WhaIlNUIZM0wMkyLKpQJ6TtKQ01lO0XjHtN5nVNI8haLkniFFW+Hwu6c0hGtHVWPClayAWBiqoShhMXKBaKFoFTwjWUpNr4QA */
 createMachine({
     initial: "Home",
     states: {
@@ -48,13 +48,6 @@ createMachine({
                     target: "gamePreStart",
                 },
                 gameOver: {
-                    target: "GameOverDisplay",
-                },
-            },
-        },
-        GameOverDisplay: {
-            on: {
-                backHome: {
                     target: "Home",
                 },
             },

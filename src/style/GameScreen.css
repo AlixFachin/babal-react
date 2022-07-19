@@ -49,9 +49,9 @@ header {
     left: 1em;
   
     width: 200px;
-    height: 200px;
+    height: clamp(5em, 30vh, 400px);
   }
-  
+
   #calibration_panel {
     position: absolute;
     top: 1em;
@@ -81,9 +81,9 @@ header {
   
   .mobileControlPanel {
     position: absolute;
-    bottom: 50px;
-    width: 100px;
-    height: 100px;
+    bottom: min(50px,5vh);
+    width: clamp(3rem, 30vh, 100px);
+    height: clamp(3rem, 30vh, 100px);
     padding: 15px;
   }
   
@@ -160,3 +160,28 @@ header {
         opacity: 0;
     }
   }
+
+.lifeLostScreen {
+    font-size: 10vh;
+    color: yellow;
+    text-align: center;
+
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 5000;
+    background-color: black;
+
+    animation: backgroundFade 1s;
+}
+
+@keyframes backgroundFade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

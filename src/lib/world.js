@@ -24,6 +24,9 @@ const pushStep_z = 40;
 const pushStep_x = 20;
 const jump_strength = 80;
 
+// GameOver function
+let triggerLifeLost;
+
 const initial_player_data = {
     position: new Vector3(0, 0, 0),
     speed: new Vector3(0, 0, 0),
@@ -191,7 +194,6 @@ const init_scene = (canvasElement) => {
     const loader = new THREE.TextureLoader();
 
     texture_list.addTextureLoader(loader.loadAsync(backgroundPicURL).then(texture => {
-        console.log('Loaded the background texture');
         scene_objects.textures.bgTexture = texture;
         scene_objects.scene.background = scene_objects.textures.bgTexture;
     }));
@@ -223,7 +225,6 @@ const add_objects = () => {
     
     const imageLoader = new THREE.TextureLoader();
     texture_list.addTextureLoader(imageLoader.loadAsync(playerTextureURL).then(texture => {
-        console.log('Finished loading the player texture!');
         scene_objects.player.mesh.material.map = texture;
         scene_objects.player.mesh.material.needsUpdate = true;
         scene_objects.player.mesh.needsUpdate = true;
@@ -243,8 +244,9 @@ const add_objects = () => {
 
 };
 
-const init_world = (canvasElement) => {
+const init_world = (canvasElement, triggerLifeLostFunc) => {
     init_scene(canvasElement);
+    triggerLifeLost = triggerLifeLostFunc;
     add_objects();
     reset_player_data();
 
@@ -296,6 +298,7 @@ const start_mainLoop = updateDisplayRoutine => {
 
         if (test_player_death()) {
             stop_mainLoop();
+            if (triggerLifeLost) triggerLifeLost();
         }
 
         scene_objects.renderer.render(scene_objects.scene, scene_objects.cameras.playerCamera);

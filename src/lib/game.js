@@ -132,8 +132,14 @@ const display_player_stats = () => {
     panel.innerText = [ position_string, speed_string, push_string, rot_string, contact_string].join('\n');
 };
 
-function prepareGame(canvasElement) {
-    init_world(canvasElement);
+/*
+ * prepareGame: Main 3JS and world setup, some of it to be done asynchronously while the countdown is displayed
+ *
+ * @param canvasElement canvas -> DOM Canvas Element which will be used to initialize 3JS rendering
+ * @param triggerLifeLost function -> function to be called when the player loses a life
+ */
+function prepareGame(canvasElement, triggerLifeLost) {
+    init_world(canvasElement, triggerLifeLost);
     initEventHandlers();
     initial_render();
 }

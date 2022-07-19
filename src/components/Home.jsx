@@ -31,7 +31,7 @@ export default function Home() {
         innerElement = <Credits returnHome={returnHome} />;
     } else if (state.value === 'settingsScreen') {
         innerElement = <SettingsScreen returnHome={returnHome} appConfig={appConfig} setAppConfig={setAppConfig} />;
-    } else if (state.value === 'gamePreStart' || state.value === 'gameLive') {
+    } else if (state.value === 'gamePreStart' || state.value === 'gameLive' || state.value == 'lifeLostDisplay') {
         innerElement = <GameScreen returnHome={returnHome} appConfig={appConfig} setAppConfig={setAppConfig} />;
     }
 
