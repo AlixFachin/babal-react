@@ -83,7 +83,7 @@ const get_terrain_type = position => {
 };
 
 const allow_jump = (player_position, player_radius) => {
-    if (Math.abs(player_position.y - player_radius) <= 1 ) {
+    if (Math.abs(player_position.y - player_radius) <= 0.5 ) {
         return true;
     }
     console.log(`Jump not allowed! y:${player_position.y}`);

@@ -7,7 +7,8 @@
 
 import {  
     set_player_accelX,
-    set_player_accelZ,    
+    set_player_accelZ, 
+    record_player_jump,   
     getPlayerData,
     reset_player_data,
     init_world,
@@ -73,6 +74,11 @@ const keyboardHandler = (isKeyDown, keyEvent) => {
             } else {
                 set_player_accelX(0);
             }
+        },
+        // Space key is related to jump functions
+        // Unlike other 
+        Space: function() {
+            record_player_jump(isKeyDown);
         },
     };
 

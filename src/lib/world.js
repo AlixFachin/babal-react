@@ -43,6 +43,9 @@ const player_data = {
     camera_z_offset: 4,
     camera_y_offset: 3,
     shouldUpdate: true, // temporary boolean to be able to finish the loop in case of error
+    // variables related to jump
+    jumpThrottled: false,
+    jumpGauge: 0,
     hasJumped: false, // to count between the keyDown and keyUp
 };
 
@@ -82,50 +85,6 @@ const reset_player_data = () => {
     player_data.camera_z_offset = initial_player_data.camera_z_offset;
 };  
 
-const player_move_handler = {
-    // Key pressed handlers -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    kd_moveRight: function()  {
-        player_data.push.setX(-pushStep_x);
-    },
-  
-    kd_moveLeft: function() {
-        player_data.push.setX(pushStep_x);
-    },
-  
-    kd_speedUp: function() {
-        player_data.push.setZ(pushStep_z);
-    },
-  
-    kd_slowDown: function() {
-        player_data.push.setZ(-pushStep_z);
-    },
-  
-    kd_startjump: function() {
-        console.log('Jump detected!');
-        if (player_data.hasJumped) {
-        // To avoid keeping accelerating on the way up (and make jump strength consistent), we only 
-        // count the jump strength during one burst
-            player_data.push.setY(0);
-        } else if(allow_jump(player_data.position, player_data.radius)) {
-            console.log('Recording a jump event!');
-            player_data.push.setY(jump_strength);
-            player_data.hasJumped = true;
-        }
-    },
-    // Key up handlers -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    ku_accelKey:  function() {
-        player_data.push.setZ(0);
-    },
-    ku_moveXKey: function() {
-        player_data.push.setX(0);     
-    },
-    ku_stopJump: function() {
-        console.log('resetting jump');
-        player_data.push.setY(0);
-        player_data.hasJumped = false;
-    },
-};
-
 /*
  *  set_player_accelx applies a new value to the player move sideways
  *  @param accelX number : percentage (between -1 and +1) of strength applied to X axis
@@ -159,43 +118,38 @@ const set_player_accelZ = accelZ => {
     player_data.push.setZ(cappedAccelZ * pushStep_z);
 };
 
-const world_keydown_handler = keyEvent => {
-    // lookup object to prevent a massive "if ... elseif ... elseif..."
-    const keydownLookup = {
-        ArrowUp: player_move_handler.kd_speedUp,
-        ArrowDown: player_move_handler.kd_slowDown,
-        ArrowLeft: player_move_handler.kd_moveLeft,
-        ArrowRight: player_move_handler.kd_moveRight,
-        Space: player_move_handler.kd_startjump,
-    };
-
-    if (keydownLookup[keyEvent.code] instanceof Function) {
-        return keydownLookup[keyEvent.code]();
-    }
-
-    if (keyEvent.code == 'KeyW') {
-        player_data.camera_z_offset = Math.max(2, player_data.camera_z_offset - 0.05);
-    } else if (keyEvent.code == 'KeyS') {
-        player_data.camera_z_offset = player_data.camera_z_offset + 0.05;
-    } else if (keyEvent.code == 'KeyE') {
-        player_data.camera_y_offset = Math.min(20, player_data.camera_y_offset + 0.05);
-    } else if (keyEvent.code == 'KeyD') {
-        player_data.camera_y_offset = Math.max(2, player_data.camera_y_offset - 0.05);                                                                                                               
-    }
-
-};
-
-const world_keyup_handler = keyEvent => {
-    const keyup_lookup = {
-        ArrowUp: player_move_handler.ku_accelKey,
-        ArrowDown: player_move_handler.ku_accelKey,
-        ArrowLeft: player_move_handler.ku_moveXKey,
-        ArrowRight: player_move_handler.ku_moveXKey,
-        Space: player_move_handler.ku_stopJump,
-    };
-  
-    if (keyup_lookup[keyEvent.code]) {
-        return keyup_lookup[keyEvent.code]();
+/*
+ *  record_player_jump will record a player jump
+ *  Unlike horizontal plane moves, the player is not allowed to jump at any time
+ *  @param accelZ number : percentage (between -1 and +1) of strength applied to Z axis
+ *  -1 is to accelerate backward, +1 is to accelerate forward
+ */
+const record_player_jump = isKeyDown => {
+    if (isKeyDown) {
+        if (player_data.jumpThrottled) {
+            player_data.jumpGauge = Math.min(1, player_data.jumpGauge + 0.1);
+            console.log(`New jump gauge: ${player_data.jumpGauge}`);
+        } else {
+            // First jump iteration
+            player_data.jumpThrottled = true;
+            player_data.jumpGauge = 0.4; // to allow a minimum of a jump
+        }
+    } else {
+        // Only when the player releases the key, we are actually jumping
+        if (player_data.jumpGauge > 0 &&
+            allow_jump(player_data.position, player_data.radius) &&
+            player_data.speed.y >= 0) {
+            console.log(`Jumping! ${jump_strength * player_data.jumpGauge}`);
+            player_data.push.setY(jump_strength * player_data.jumpGauge);        
+            player_data.jumpGauge = 0;
+            player_data.jumpThrottled = false;
+            // will need to reset the push after a timeout
+            setTimeout(() => {
+                player_data.push.setY(0);
+            }, 200);
+        } else {
+            console.log(`Jumping not allowed!`);
+        }
     }
 
 };
@@ -358,6 +312,7 @@ export {
     reset_player_data,
     set_player_accelX,
     set_player_accelZ,
+    record_player_jump,
     update_player_position,
     init_world,
     start_mainLoop,
