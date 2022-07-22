@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { GlobalGameContext } from '../lib/GameStateProvider';
 import { useActor } from '@xstate/react';
 
-import { startGame, stopGame, prepareGame, resetGame } from "../lib/game";
+import { startGame, stopGame, prepareGame, resetGame, set_accelX_factor, set_accelZ_factor, oneclick_jump_handler } from "../lib/game";
 
 import ActionPanel from "./ActionPanel.jsx";
 import DirectionPanel from "./DirectionPanel.jsx";
@@ -76,8 +76,8 @@ export default function GameScreen({ returnHome, appConfig }) {
         { state.value === 'gamePreStart' ? <CountDown initialCount={3} onCountDownEnd={ () => send('prestartTimer')} /> : '' }
         { screenHeader }
         { state.value === 'gameLive' ? <div id="score_panel" className="panel"></div> : '' }
-        { appConfig.isMobileControl &&  state.value === 'gameLive' ? <ActionPanel /> : ''  }
-        { appConfig.isMobileControl &&  state.value === 'gameLive' ? <DirectionPanel /> : ''  }
+        { appConfig.isMobileControl &&  state.value === 'gameLive' ? <ActionPanel jumpHandler={ oneclick_jump_handler } /> : ''  }
+        { appConfig.isMobileControl &&  state.value === 'gameLive' ? <DirectionPanel accelXhandler={set_accelX_factor} accelZhandler={set_accelZ_factor}  /> : ''  }
         { state.value === 'lifeLostDisplay' ? <LifeLostScreen livesLeft={livesLeft} restartGame={restartGame} gameOverFunc={gameOver} /> : '' }
     </div>);
 }

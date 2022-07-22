@@ -7,7 +7,7 @@
  * 
 */ 
 import { Vector3, Euler } from "three";
-import { allow_jump, get_initial_player_position, get_terrain_tiles_list } from "./map";
+import { get_initial_player_position, get_terrain_tiles_list } from "./map";
 import { update_player_data } from "./physics";
 
 import { test_map_features } from "./map";
@@ -23,6 +23,8 @@ import { vector2String, vectorAbsFloor } from "./utils";
 const pushStep_z = 40;
 const pushStep_x = 20;
 const jump_strength = 80;
+const jump_duration = 80; // length of the timeout which resets the push to 0
+const jump_threshold = 2;
 
 // GameOver function
 let triggerLifeLost;
@@ -47,9 +49,17 @@ const player_data = {
     camera_y_offset: 3,
     shouldUpdate: true, // temporary boolean to be able to finish the loop in case of error
     // variables related to jump
-    jumpThrottled: false,
-    jumpGauge: 0,
-    hasJumped: false, // to count between the keyDown and keyUp
+    jumpRecorded: false,
+    jumpOnNextBounce: false,
+    jumpCallBack: function() {
+        player_data.push.setY(jump_strength);        
+        player_data.jumpOnNextBounce = false;
+        player_data.jumpRecorded = false;
+        setTimeout(() => {
+            player_data.push.setY(0);
+        }, jump_duration);    
+    },
+
 };
 
 const scene_objects = {
@@ -129,31 +139,36 @@ const set_player_accelZ = accelZ => {
  */
 const record_player_jump = isKeyDown => {
     if (isKeyDown) {
-        if (player_data.jumpThrottled) {
-            player_data.jumpGauge = Math.min(1, player_data.jumpGauge + 0.1);
-            console.log(`New jump gauge: ${player_data.jumpGauge}`);
-        } else {
-            // First jump iteration
-            player_data.jumpThrottled = true;
-            player_data.jumpGauge = 0.4; // to allow a minimum of a jump
+        // When the user presses the jump key, we will record the jump no matter what
+        // The jump will take place or not according to the timing at which the 
+        // keyUp event takes place
+        // (See documentation for detailed reasoning)
+        console.log(`JUMP: recording jump`);
+        if (!player_data.jumpRecorded) {
+            player_data.jumpRecorded = true;
         }
-    } else {
-        // Only when the player releases the key, we are actually jumping
-        if (player_data.jumpGauge > 0 &&
-            allow_jump(player_data.position, player_data.radius) &&
-            player_data.speed.y >= 0) {
-            console.log(`Jumping! ${jump_strength * player_data.jumpGauge}`);
-            player_data.push.setY(jump_strength * player_data.jumpGauge);        
-            player_data.jumpGauge = 0;
-            player_data.jumpThrottled = false;
-            // will need to reset the push after a timeout
-            setTimeout(() => {
-                player_data.push.setY(0);
-            }, 200);
-        } else {
-            console.log(`Jumping not allowed!`);
-        }
+        return;
+    } 
+
+    if (player_data.position.y > jump_threshold) {
+        // jump event while the player is too high -> nothing happens
+        console.log(`JUMP: above threshold - cancelling`);
+        player_data.jumpRecorded = false;
+        return;
     }
+    console.log(`JUMP - below threshold (Y=${player_data.position.y} < ${jump_threshold})`);
+
+    if (player_data.speed.y < 0) {
+        // the player released the key while the ball was still descending
+        // but "close enough" from the ground -> we store the jump event for the 
+        // next bounce
+        console.log(`JUMP: jump right before bounce ${jump_strength}`);
+        player_data.jumpOnNextBounce = true;
+        player_data.jumpRecorded = false;
+        return;
+    }
+    console.log(`JUMP: jump right after bounce ${jump_strength}`);
+    player_data.jumpCallBack();
 
 };
 

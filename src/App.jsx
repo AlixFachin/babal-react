@@ -3,7 +3,6 @@ import Home from "./components/Home";
 import { GameStateProvider } from "./lib/GameStateProvider";
 
 function App() {
-
     return (
         <GameStateProvider>
             <Home />

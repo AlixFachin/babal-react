@@ -69,12 +69,17 @@ const apply_collisions = (player_data, new_acceleration, dt) => {
         player_data.speed.y = 0;
         player_data.speed.addScaledVector(updated_acceleration, dt);
         player_data.position.addScaledVector(player_data.speed, dt);
-        // DEBUG
+        // For debug, we set the flag "contact" so that we can display it on screen
         player_data.contact = true;
+        // Jump management: we launch the callback 
+        if (player_data.jumpOnNextBounce && player_data.jumpCallBack instanceof Function) {
+            player_data.jumpCallBack();
+            player_data.jumpOnNextBounce = false;
+        }
         return;
     }
 
-    const bounce_dissipation_coeff = 0.8; 
+    const bounce_dissipation_coeff = 0.7; 
     player_data.contact = false;
 
     // Computing the speed from the player's acceleration
@@ -85,7 +90,7 @@ const apply_collisions = (player_data, new_acceleration, dt) => {
     if (new_speed.y < 0 && 
         player_data.position.y - player_data.radius >= 0 &&
         new_position.y  - player_data.radius < 0) {
-        console.log(`Pot bounce! Pos:${vector2String(player_data.position)}, Spd: ${vector2String(new_speed)}},Pos2: ${vector2String(new_position)}`);
+        console.log(`Post bounce! Pos:${vector2String(player_data.position)}, Spd: ${vector2String(new_speed)}},Pos2: ${vector2String(new_position)}`);
         // computing the (X, Z) of impact point
         const impact_dt = (player_data.radius - player_data.position.y) / new_speed.y;
         const impact_x = player_data.position.x + new_speed.x * impact_dt;
@@ -99,6 +104,12 @@ const apply_collisions = (player_data, new_acceleration, dt) => {
             // The new y will "bounce" as well on the "y=radius" line (i.e. take symetrical point)
             new_position.setY(2 * player_data.radius - new_position.y);
             console.log(`New vertical speed: ${new_speed.y}, new pos: ${vector2String(new_position)}`);
+            // Jump management: If we are waiting for the next bounce to jump, we do it now
+            if (player_data.jumpOnNextBounce && player_data.jumpCallBack instanceof Function) {
+                console.log('JUMP - After the bounce!');
+                player_data.jumpCallBack();
+                player_data.jumpOnNextBounce = false;
+            }
         }
     }
 
@@ -114,6 +125,8 @@ const update_player_data = (player_data) => {
     const updated_acceleration = calc_acceleration(player_data);
 
     // Computing the speed from the player's acceleration
+    // TODO: Check the the two following lines are really necessary
+    // (it seems to me that the speed is computed again during collision routine)
     const new_speed = player_data.speed.clone();
     new_speed.addScaledVector(updated_acceleration, config_forces.dt);
 

@@ -93,19 +93,24 @@ const initEventHandlers = () => {
     // Keyboard events (desktop version)
     document.addEventListener('keydown', event => keyboardHandler(true, event));
     document.addEventListener('keyup', event => keyboardHandler(false, event));
+};
 
-    // trackpad (left)
-    // document.getElementById('trackCursor').addEventListener('mousedown', onMouseDownTrackPad );
-    // document.getElementById('trackCursor').addEventListener('mouseup', onMouseUpTrackPad);
-    // document.getElementById('trackCursor').addEventListener('touchstart', onMouseDownTrackPad );
-    // document.getElementById('trackCursor').addEventListener('touchend', onMouseUpTrackPad);
+const set_accelX_factor = (accelX) => {
+    if (!isNaN(Number(accelX))) {
+        set_player_accelX(accelX);
+    }
+};
 
-    // document.onmousemove = onMouseMoveDocument;
-    // document.ontouchmove = onMouseMoveDocument;
+const set_accelZ_factor = (accelZ) => {
+    if (!isNaN(Number(accelZ))) {
+        set_player_accelZ(accelZ);
+    }
+};
 
-    // Reset Button
-    // document.getElementById('reset_button').addEventListener('click', reset_game_click);
-
+const oneclick_jump_handler = () => {
+    // we simulate a keypress down, then a keypress up
+    record_player_jump(true);
+    record_player_jump(false);
 };
 
 //TODO: Remove the eslint comment!
@@ -160,4 +165,7 @@ export {
     prepareGame,
     stopGame,
     resetGame,
+    set_accelX_factor,
+    set_accelZ_factor,
+    oneclick_jump_handler,
 };

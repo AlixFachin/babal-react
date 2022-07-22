@@ -1,8 +1,19 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
-export default function ActionPanel() {
-    return <div id="mobileControl_right" className="mobileControlPanel panel">
-        <button id="btnJump">JUMP</button>
+export default function ActionPanel({jumpHandler}) {
+    
+    const onJumpClick = clickEvent => {
+        clickEvent.preventDefault();
+        jumpHandler();
+    };
+    
+    return <div id="mobileControl_right" className="mobileControlPanel panel" onClick={ onJumpClick }>
+        <p>JUMP</p>
     </div>;
 
 }
+
+ActionPanel.propTypes = {
+    jumpHandler: PropTypes.func,
+};
