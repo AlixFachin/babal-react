@@ -4,7 +4,7 @@ import "../style/Home.css";
 import { GlobalGameContext } from '../lib/GameStateProvider';
 import { useActor } from '@xstate/react';
 
-import MainMenu from './mainMenu';
+import MainMenu from './MainMenu';
 import Credits from './Credits';
 import SettingsScreen from './Settings';
 import GameScreen from './GameScreen';
